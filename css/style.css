@@ -1,34 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-    --color-bg: #FFFFFF;
-    --color-bg-secondary: #F9F9F9;
-    --color-text-primary: #1A1A1A;
-    --color-text-secondary: #666666;
-    --color-text-tertiary: #999999;
-    --color-border: #E5E5E5;
-    --color-accent: #0F6E56;
-    --color-accent-light: #E1F5EE;
+    --color-bg: #faf9f5;
+    --color-bg-secondary: #f0efe9;
+    --color-text-primary: #141413;
+    --color-text-secondary: #5c5a52;
+    --color-text-tertiary: #b0aea5;
+    --color-border: #e8e6dc;
+    --color-accent: #d97757;
+    --color-accent-light: #f8ede8;
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --color-bg: #0D0D0D;
-        --color-bg-secondary: #1A1A1A;
-        --color-text-primary: #F5F5F5;
-        --color-text-secondary: #A3A3A3;
-        --color-text-tertiary: #737373;
-        --color-border: #2A2A2A;
-        --color-accent: #1D9E75;
-        --color-accent-light: #0F6E56;
+        --color-bg: #141413;
+        --color-bg-secondary: #1e1d1a;
+        --color-text-primary: #faf9f5;
+        --color-text-secondary: #b0aea5;
+        --color-text-tertiary: #7a7870;
+        --color-border: #2e2d28;
+        --color-accent: #d97757;
+        --color-accent-light: #2a1f19;
     }
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: 'Lora', Georgia, 'Times New Roman', serif;
     background: var(--color-bg);
     color: var(--color-text-primary);
-    line-height: 1.6;
+    line-height: 1.7;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -42,16 +44,16 @@ body {
 nav {
     position: sticky;
     top: 0;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(250, 249, 245, 0.95);
     border-bottom: 1px solid var(--color-border);
     padding: 16px 0;
     z-index: 100;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
 }
 
 @media (prefers-color-scheme: dark) {
     nav {
-        background: rgba(13, 13, 13, 0.95);
+        background: rgba(20, 20, 19, 0.95);
     }
 }
 
@@ -62,10 +64,12 @@ nav .container {
 }
 
 nav .logo {
-    font-size: 18px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 17px;
     font-weight: 600;
     color: var(--color-text-primary);
     text-decoration: none;
+    letter-spacing: -0.01em;
 }
 
 nav ul {
@@ -75,9 +79,11 @@ nav ul {
 }
 
 nav a {
+    font-family: 'Poppins', Arial, sans-serif;
     color: var(--color-text-secondary);
     text-decoration: none;
-    font-size: 15px;
+    font-size: 14px;
+    font-weight: 500;
     transition: color 0.2s;
 }
 
@@ -86,27 +92,34 @@ nav a:hover {
 }
 
 /* Typography */
+h1, h2, h3, h4 {
+    font-family: 'Poppins', Arial, sans-serif;
+}
+
 h1 {
     font-size: 48px;
     font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 16px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
 }
 
 h2 {
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 600;
+    letter-spacing: -0.01em;
     margin-bottom: 40px;
 }
 
 h3 {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
+    letter-spacing: -0.01em;
     margin-bottom: 12px;
 }
 
 h4 {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
     margin-bottom: 12px;
 }
@@ -121,19 +134,32 @@ section {
     padding: 120px 0 100px;
 }
 
+.hero-photo {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 28px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
 .hero-subtitle {
-    font-size: 20px;
+    font-size: 19px;
     color: var(--color-text-secondary);
     margin-bottom: 32px;
-    max-width: 800px;
-    line-height: 1.7;
+    max-width: 680px;
+    line-height: 1.8;
+    font-style: italic;
 }
 
 .hero-meta {
     display: flex;
     gap: 24px;
     flex-wrap: wrap;
-    font-size: 15px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
     color: var(--color-text-secondary);
 }
 
@@ -353,23 +379,30 @@ section {
 }
 
 .blog-category {
-    font-size: 13px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
     color: var(--color-accent);
-    font-weight: 500;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .blog-title {
-    font-size: 18px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 17px;
     font-weight: 600;
-    margin-bottom: 8px;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
 }
 
 .blog-excerpt {
     font-size: 14px;
     color: var(--color-text-secondary);
-    line-height: 1.6;
-    margin-bottom: 8px;
+    line-height: 1.7;
+    margin-bottom: 10px;
+    font-style: italic;
 }
 
 .blog-date {
@@ -504,7 +537,7 @@ section {
 }
 
 .btn-primary:hover {
-    background: #0F6E56;
+    background: #c4653e;
     transform: translateY(-1px);
 }
 
