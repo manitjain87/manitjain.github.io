@@ -24,7 +24,7 @@ The question enterprises need to stop asking is "is AI good enough yet?" For mos
 
 John Collison at Stripe — via Pichai — gave the clearest taxonomy I've seen of what's actually in the way. None of the five are technical:
 
-**1. Prompting expertise.** Generic prompting underperforms. Getting real value requires domain-specific knowledge of how to instruct models for your context — Stripe-specific prompting, Farfetch-specific prompting. That expertise has to be built, and it takes time.
+**1. Prompting expertise.** Generic prompting underperforms. Getting real value requires domain-specific knowledge of how to instruct models for your context. That expertise has to be built, and it takes time.
 
 **2. Data access pipelines.** Agentic workflows require clean, accessible data. Most enterprises have data that is siloed, inconsistently formatted, and permission-controlled in ways that predate the concept of an agent needing to traverse it.
 
@@ -52,7 +52,7 @@ The implication is precise. If you're waiting for AI to be "ready for everyone,"
 
 ## What the Companies That Have Crossed Look Like
 
-ElevenLabs is the most concrete public model of an AI-native organisation at meaningful scale — 470 people, $450M ARR run rate, and a structure that looks nothing like a conventional company of that size.
+London-based ElevenLabs is a concrete public model of an AI-native organisation at meaningful scale — 470 people, $450M ARR run rate, and a structure that looks nothing like a conventional company of that size.
 
 The org is flat in a way that would make most management consultants uncomfortable. Both Staniszewski and his co-founder carry 15+ direct reports — versus the conventional 6–8. Teams are ~10 people, organised around outcomes rather than functions. Decision-making is fast because the hierarchy is thin.
 
@@ -97,8 +97,6 @@ The technology is not the hard part. It hasn't been for at least a year.
 The hard part is being honest that the blocker is internal. That the permissions engine needs rebuilding. That the job architecture is outdated. That a central AI team filing requests is not a strategy. That the concentric circles need to start somewhere, and that somewhere needs to be now.
 
 Pichai said something that lands: *"You can paralyse yourself thinking 10 years ahead when the curve is steep. Focus on next year."*
-
-For most leadership teams, next year is already late.
 
 ---
 
