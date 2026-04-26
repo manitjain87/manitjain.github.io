@@ -36,10 +36,6 @@ Andon Labs takes its name from the Toyota Production System's andon cord.
 
 In Toyota's factories, any worker on the line can pull the cord to halt production when they spot a quality problem. Not their supervisor. Not the plant manager. The worker. The authority to stop a billion-dollar manufacturing process is distributed to the person closest to the problem.
 
-Most factories didn't do this. It felt like chaos — a line worker with the power to shut everything down. Toyota's competitors centralised that authority. Quality decisions went up the chain. Toyota distributed them down.
-
-Toyota won.
-
 Axel Backlund and Lukas Petersson — the two 24-year-old founders who left software engineering jobs to start Andon Labs — named their company after that concept deliberately. Their YC mission: *"Autonomous organisations without humans in the loop."* Their research agenda: stress-test what happens when AI agents get real authority, real consequences, and real room to fail.
 
 Andon Market is not a product. It's a question: what breaks when the authority is real?
@@ -49,10 +45,6 @@ Andon Market is not a product. It's a question: what breaks when the authority i
 ## The Academic Answer
 
 A forthcoming Brookings paper compared AI adoption rates across firms in the US and Europe and found one consistent differentiator: the firms that decentralise authority adopt AI. Not the firms with the largest budgets. The firms that push decisions to the edges and reduce the approvals required before anything moves. One standard-deviation increase in decentralisation: 9.6 percentage points higher adoption.
-
-The paper notes this mirrors the IT gap of the 1990s. The companies that organised around IT compounded that advantage for thirty years. The ones that centralised it fell behind and didn't recover.
-
-We are at the same fork.
 
 ---
 
@@ -78,17 +70,16 @@ Anthropic ran its own version of this experiment — deliberately bounded. Sixty
 
 The finding that matters: Claude Opus significantly outperformed Claude Haiku in negotiations. And the people whose agents lost didn't know.
 
-That's the frame large enterprises are missing. The question isn't whether to give AI authority — Anthropic just demonstrated that a governed, bounded deployment works cleanly. The question is what happens when your agent is negotiating on your behalf and you've deployed the wrong model, or given it the wrong scope. You won't feel the loss in real time. It'll show up in outcomes you attribute to something else.
+The question isn't whether to give AI authority — Anthropic just demonstrated that a governed, bounded deployment works cleanly. The question is what happens when your agent is negotiating on your behalf and you've deployed the wrong model, or given it the wrong scope. 
 
-This is the real tension — and it doesn't get talked about honestly enough. A CFO with fiduciary obligations, a legal team managing data residency, a risk function accountable to regulators — these aren't bureaucratic obstacles to AI adoption. They're the boundaries that make real authority possible at scale. The question isn't centralise or decentralise. It's: **what is the right scope to distribute, and are you deploying the right agent to operate within it?**
+In the enterprise context, a CFO with fiduciary obligations, a legal team managing data residency, a risk function accountable to regulators — these aren't bureaucratic obstacles to AI adoption. They're the boundaries that make real authority possible at scale. It's: **what is the right scope to distribute, and are you deploying the right agent to operate within it?**
 
 The andon cord is instructive. Toyota didn't give line workers the authority to redesign the car. They gave them the authority to stop the line — bounded, consequential, real. The scope was deliberate. The authority within that scope was absolute.
 
-The enterprises that will cross in 2027 are the ones designing that boundary now. Not "AI can do anything in a sandbox." Something more precise: here is the domain, here are the guardrails at the edge, and within those boundaries — pull the cord. With the right model pulling it.
+The enterprises should start designing that boundary now. Not "AI can do anything in a sandbox." Something more precise: here is the domain, here are the guardrails at the edge, and within those boundaries — pull the cord. With the right model pulling it.
 
 That design work requires legal, risk, compliance, and technology in the same room. Most organisations haven't started it. The ones that have are quietly pulling ahead.
 
-Pichai said 2027 is when non-engineering processes move. The companies that lead that wave aren't waiting for better models. They're deciding who is allowed to pull — and what they're allowed to pull for.
 
 ---
 

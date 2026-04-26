@@ -139,17 +139,9 @@ None of these are marketing line items. They're operations, technology, and infr
 
 ## The Retailer's P&L Question
 
-If 20% of purchase decisions shift to agent-mediated in the next three years — conservative, for the categories where UCP will penetrate fastest: consumer electronics, home goods, apparel basics, B2B procurement — the ROI on current marketing spend changes materially.
-
 The retailer running a $10M annual paid media budget to drive human discovery needs to ask: how much of that spend is reaching buyers who won't be making this decision themselves in 2027?
 
 It's not zero. Brand-building still matters. Inspiration-based categories will shift more slowly. But the performance marketing budget — spend explicitly targeting conversion — is the first to be exposed.
-
-The retailers moving early are already doing two things differently.
-
-First, treating product data as a strategic asset, not an operational afterthought. Clean, structured, complete data across every SKU is the foundation of AEO. It's also the thing most organisations have systematically underfunded for a decade.
-
-Second, measuring fulfillment reliability as a marketing metric. Delivery performance is no longer just a customer service number — it's the score that determines whether an agent recommends you or routes the purchase to your competitor.
 
 ---
 
