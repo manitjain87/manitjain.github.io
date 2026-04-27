@@ -1,18 +1,18 @@
-# The Agent Doesn't Click Ads
+# UCP — The Open Standard for Agentic Commerce, Developed by Google and Shopify, Now Backed by Amazon, Meta, Stripe, Microsoft, Salesforce and More
 
 *April 2026 · 9 min read · Strategic Finance*
 
 ---
 
-Google made over $200 billion from advertising last year. Last month, Google co-published the open standard designed to let AI agents buy things without clicking a single ad.
+Google made ~$300 billion from advertising last year. Earlier in 2026, Google and Shopify co-published the open standard designed to let AI agents buy things without clicking a single ad. Last week, Amazon, Meta, Microsoft, Salesforce, and Stripe joined the Tech Council. Over twenty global partners — Visa, Mastercard, American Express, Adyen, Best Buy, Walmart, The Home Depot, Zalando — have endorsed it.
 
-That tension is the most important thing happening in commerce right now — and most retailers haven't noticed yet.
+Agents don't click ads. Shopify and Salesforce actively compete for the same merchants — yet here they are, co-building the protocol. That tension is the most important thing happening in commerce right now.
 
 The Universal Commerce Protocol (UCP) is an open standard that lets any AI agent query any connected merchant — pricing, inventory, fulfillment speed, product specs, return policy — and complete a purchase. No browser. No search bar. No ad.
 
-Shopify co-developed it. Amazon, Meta, Microsoft, Salesforce, and Stripe just joined the Tech Council. Over twenty global partners — Visa, Mastercard, American Express, Adyen, Best Buy, Walmart, The Home Depot, Zalando — have endorsed it.
-
 This isn't a startup experiment. It's the infrastructure layer of agent commerce, built by the companies that currently own commerce.
+
+![The Universal Commerce Protocol ecosystem — Amazon, Shopify, Stripe, Meta, Google, Salesforce, Microsoft, Etsy, Target, and Wayfair connected to the UCP hub](../images/UCP1.jpeg)
 
 ---
 
@@ -25,6 +25,8 @@ Today, if an AI agent wants to find the best price on a specific coffee maker, i
 With UCP, the agent sends a structured query to any connected merchant — product ID, quantity, delivery postcode — and gets back a structured response: price, stock level, delivery time, return window. Comparable across every merchant. Machine-readable. Fast.
 
 Built on MCP — the same protocol that already lets AI agents use tools — and compatible with Agent Payments Protocol (AP2) for secure transactions. Any merchant who exposes a UCP endpoint becomes instantly accessible to every AI agent that speaks the standard.
+
+![Sundar Pichai endorsing UCP progress on X, with the UCP technical architecture showing Services, Capabilities, Extensions, and Transport layers including MCP and Agent2Agent Protocol](../images/UCP3.png)
 
 The agent sweeps the internet. Finds best value. Buys.
 
