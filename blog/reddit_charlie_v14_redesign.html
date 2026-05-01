@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reddit (RDDT) — Charlie v14 Investment Memo</title>
+<style>
+/* ═══════════════ RESET & BASE ═══════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6; color: #1e293b; background: #f1f5f9;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+/* ═══════════════ TYPOGRAPHY ═══════════════ */
+h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; }
+h2 { font-size: 1.5rem; font-weight: 700; color: #0f172a; }
+h3 { font-size: 1.15rem; font-weight: 700; color: #334155; margin: 1.5rem 0 0.75rem; }
+h4 { font-size: 1rem; font-weight: 600; color: #475569; margin: 1rem 0 0.5rem; }
+p  { margin-bottom: 0.85rem; line-height: 1.7; }
+strong { color: #0f172a; }
+
+/* ═══════════════ CARDS ═══════════════ */
+.card {
+  background: #fff; border-radius: 12px; padding: 1.75rem 2rem;
+  margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  border: 1px solid #e2e8f0;
+}
+.card-header {
+  display: flex; align-items: center; gap: 0.6rem;
+  margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+  border-bottom: 2px solid #f1f5f9;
+}
+.card-header .icon { font-size: 1.3rem; }
+.card-header h2 { flex: 1; }
+
+/* ═══════════════ HEADER ═══════════════ */
+.memo-header {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #fff; border-radius: 16px; padding: 2.5rem 2.5rem 1.5rem;
+  margin-bottom: 1.5rem; box-shadow: 0 4px 24px rgba(15,23,42,0.15);
+}
+.memo-header .ticker-line { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.25rem; }
+.memo-header .ticker { font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; }
+.memo-header .exchange { font-size: 1.1rem; color: #94a3b8; font-weight: 500; }
+.memo-header .company { font-size: 1.3rem; color: #cbd5e1; margin-bottom: 0.25rem; }
+.memo-header .meta { font-size: 0.85rem; color: #64748b; margin-bottom: 1.5rem; }
+
+/* Header stat strip */
+.stat-strip {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: rgba(255,255,255,0.08);
+  border-radius: 10px; overflow: hidden; margin-top: 1rem;
+}
+.stat-item {
+  background: rgba(255,255,255,0.06); padding: 1rem 1.25rem; text-align: center;
+}
+.stat-item .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px; color: #94a3b8; margin-bottom: 0.3rem; }
+.stat-item .stat-value { font-size: 1.5rem; font-weight: 700; color: #fff; }
+.stat-item .stat-sub  { font-size: 0.75rem; color: #64748b; margin-top: 0.15rem; }
+.stat-value.up    { color: #34d399; }
+.stat-value.down  { color: #f87171; }
+.stat-value.warn  { color: #fbbf24; }
+
+/* Recommendation pill */
+.rec-pill {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1.25rem; border-radius: 100px;
+  font-weight: 700; font-size: 0.9rem; letter-spacing: 0.3px;
+  margin-bottom: 0.75rem;
+}
+.rec-pill.accumulate { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+.rec-pill.buy        { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+.rec-pill.hold       { background: #e2e8f0; color: #475569; border: 1px solid #cbd5e1; }
+.rec-pill.pass       { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+/* ═══════════════ TABLES ═══════════════ */
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+thead th {
+  background: #f8fafc; color: #64748b; font-weight: 600; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.6px; padding: 0.7rem 0.85rem;
+  border-bottom: 2px solid #e2e8f0; text-align: left;
+}
+tbody td { padding: 0.7rem 0.85rem; border-bottom: 1px solid #f1f5f9; }
+tbody tr:hover { background: #f8fafc; }
+tr.row-up     { background: #f0fdf4; } tr.row-up td:first-child { border-left: 3px solid #22c55e; }
+tr.row-down   { background: #fef2f2; } tr.row-down td:first-child { border-left: 3px solid #ef4444; }
+tr.row-warn   { background: #fffbeb; } tr.row-warn td:first-child { border-left: 3px solid #f59e0b; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ═══════════════ SENTIMENT TAGS ═══════════════ */
+.tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.72rem; font-weight: 600; }
+.tag-green  { background: #d1fae5; color: #065f46; }
+.tag-amber  { background: #fef3c7; color: #92400e; }
+.tag-red    { background: #fee2e2; color: #991b1b; }
+.tag-blue   { background: #dbeafe; color: #1e40af; }
+.tag-gray   { background: #f1f5f9; color: #475569; }
+
+/* ═══════════════ FRAMEWORK BAR ═══════════════ */
+.fw-bar-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; }
+.fw-label   { width: 180px; font-size: 0.82rem; font-weight: 600; color: #334155; text-align: right; }
+.fw-track   { flex: 1; height: 22px; background: #f1f5f9; border-radius: 6px; overflow: hidden; position: relative; }
+.fw-fill    { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 0.6rem; font-size: 0.7rem; font-weight: 700; color: #fff; }
+.fw-fill.pos { background: linear-gradient(90deg, #22c55e, #16a34a); }
+.fw-fill.neg { background: linear-gradient(90deg, #ef4444, #dc2626); }
+.fw-fill.neut { background: linear-gradient(90deg, #94a3b8, #64748b); }
+.fw-weight  { width: 45px; font-size: 0.8rem; font-weight: 700; color: #475569; text-align: right; }
+.fw-score   { width: 55px; font-size: 0.8rem; color: #64748b; }
+
+/* ═══════════════ SCENARIO CARDS ═══════════════ */
+.scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.25rem 0; }
+.scenario-card { border-radius: 10px; padding: 1.25rem; text-align: center; border: 1px solid #e2e8f0; }
+.scenario-card.bull { background: #f0fdf4; border-color: #bbf7d0; }
+.scenario-card.base { background: #f8fafc; border-color: #e2e8f0; }
+.scenario-card.bear { background: #fef2f2; border-color: #fecaca; }
+.scenario-card .sc-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; margin-bottom: 0.4rem; }
+.scenario-card.bull .sc-label { color: #15803d; }
+.scenario-card.base .sc-label { color: #475569; }
+.scenario-card.bear .sc-label { color: #b91c1c; }
+.scenario-card .sc-price { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.2rem; }
+.scenario-card .sc-return { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; }
+.scenario-card .sc-prob  { font-size: 0.8rem; color: #64748b; }
+.scenario-card .sc-basis { font-size: 0.75rem; color: #94a3b8; margin-top: 0.5rem; line-height: 1.4; }
+
+/* ═══════════════ METRIC GRID ═══════════════ */
+.metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin: 1rem 0; }
+.metric-tile {
+  background: #f8fafc; border-radius: 8px; padding: 1rem; text-align: center;
+  border: 1px solid #e2e8f0;
+}
+.metric-tile .mt-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; font-weight: 600; margin-bottom: 0.3rem; }
+.metric-tile .mt-value { font-size: 1.4rem; font-weight: 800; color: #0f172a; }
+.metric-tile .mt-delta { font-size: 0.72rem; font-weight: 600; margin-top: 0.1rem; }
+.mt-up   { color: #16a34a; }
+.mt-down { color: #dc2626; }
+
+/* ═══════════════ SPARKLINE CHART (SVG) ═══════════════ */
+.sparkline-wrap { margin: 1rem 0; }
+.sparkline-wrap svg { width: 100%; height: auto; }
+
+/* ═══════════════ RISK REWARD VISUAL ═══════════════ */
+.rr-visual { display: flex; align-items: center; gap: 1rem; margin: 1rem 0; font-size: 0.85rem; }
+.rr-bar-track { flex: 1; height: 32px; background: #f1f5f9; border-radius: 16px; position: relative; overflow: hidden; }
+.rr-upside { position: absolute; right: 0; top: 0; height: 100%; background: linear-gradient(90deg, #22c55e, #16a34a); border-radius: 0 16px 16px 0; display: flex; align-items: center; justify-content: flex-end; padding-right: 0.6rem; font-weight: 700; color: #fff; font-size: 0.75rem; }
+.rr-downside { position: absolute; left: 0; top: 0; height: 100%; background: linear-gradient(90deg, #dc2626, #ef4444); border-radius: 16px 0 0 16px; display: flex; align-items: center; padding-left: 0.6rem; font-weight: 700; color: #fff; font-size: 0.75rem; }
+.rr-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 2px; height: 28px; background: #0f172a; border-radius: 1px; }
+.rr-label { font-weight: 600; }
+
+/* ═══════════════ COLLAPSIBLE (DETAILS) ═══════════════ */
+details { margin: 0.5rem 0; }
+details summary { cursor: pointer; font-weight: 600; color: #475569; padding: 0.5rem 0; font-size: 0.9rem; }
+details summary:hover { color: #0f172a; }
+
+/* ═══════════════ CALLOUT ═══════════════ */
+.callout {
+  border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.9rem;
+  border-left: 4px solid;
+}
+.callout.info   { background: #eff6ff; border-color: #3b82f6; color: #1e40af; }
+.callout.warn   { background: #fffbeb; border-color: #f59e0b; color: #92400e; }
+.callout.danger { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
+.callout strong  { color: inherit; }
+
+/* ═══════════════ FOOTER ═══════════════ */
+.footer-note {
+  text-align: center; color: #94a3b8; font-size: 0.75rem;
+  padding: 1.5rem; line-height: 1.6;
+}
+.sources { font-size: 0.8rem; color: #64748b; line-height: 1.7; padding: 1rem 0; border-top: 1px solid #e2e8f0; margin-top: 1.5rem; }
+
+/* ═══════════════ PRINT ═══════════════ */
+@media print {
+  body { background: #fff; }
+  .card { box-shadow: none; border: 1px solid #e2e8f0; break-inside: avoid; }
+  .memo-header { background: #0f172a !important; -webkit-print-color-adjust: exact; }
+  .stat-strip { -webkit-print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<div class="memo-header">
+  <span class="rec-pill accumulate">ACCUMULATE ON WEAKNESS</span>
+  <div class="ticker-line">
+    <span class="ticker">RDDT</span>
+    <span class="exchange">NYSE</span>
+  </div>
+  <div class="company">Reddit, Inc. — Investment Memorandum</div>
+  <div class="meta">Charlie v14 · May 1, 2026 · Q1 2026 Earnings Update · Price $165.52 · Market Cap $31.9B</div>
+
+  <div class="stat-strip">
+    <div class="stat-item">
+      <div class="stat-label">Conviction</div>
+      <div class="stat-value warn">7 / 10</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Base Target (12m)</div>
+      <div class="stat-value">$200</div>
+      <div class="stat-sub">+21% expected return</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Risk / Reward</div>
+      <div class="stat-value">3.0:1</div>
+      <div class="stat-sub">probability-weighted</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Position Size</div>
+      <div class="stat-value">3–5%</div>
+      <div class="stat-sub">entry-price capped</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ KEY METRICS TILES ═══════════════ -->
+<div class="metric-grid">
+  <div class="metric-tile">
+    <div class="mt-label">Q1 Revenue</div>
+    <div class="mt-value">$663M</div>
+    <div class="mt-delta mt-up">+69% YoY</div>
+  </div>
+  <div class="metric-tile">
+    <div class="mt-label">Q2 Guidance</div>
+    <div class="mt-value">$715–725M</div>
+    <div class="mt-delta">~49% YoY</div>
+  </div>
+  <div class="metric-tile">
+    <div class="mt-label">Gross Margin</div>
+    <div class="mt-value">91.5%</div>
+    <div class="mt-delta mt-up">↑ 30bps YoY</div>
+  </div>
+  <div class="metric-tile">
+    <div class="mt-label">Op Margin</div>
+    <div class="mt-value">27.6%</div>
+    <div class="mt-delta mt-up">+750bps vs FY25</div>
+  </div>
+  <div class="metric-tile">
+    <div class="mt-label">FCF Margin (Q1)</div>
+    <div class="mt-value">47%</div>
+    <div class="mt-delta mt-up">$312M</div>
+  </div>
+  <div class="metric-tile">
+    <div class="mt-label">ARPU</div>
+    <div class="mt-value">$5.23</div>
+    <div class="mt-delta mt-up">+44% YoY</div>
+  </div>
+  <div class="metric-tile">
+    <div class="mt-label">Cash & Investments</div>
+    <div class="mt-value">$2.8B</div>
+    <div class="mt-delta">Zero net debt</div>
+  </div>
+  <div class="metric-tile">
+    <div class="mt-label">Short Interest</div>
+    <div class="mt-value warn">12.1%</div>
+    <div class="mt-delta">of float</div>
+  </div>
+</div>
+
+<!-- ═══════════════ EXECUTIVE SUMMARY ═══════════════ -->
+<div class="card">
+  <div class="card-header"><span class="icon"></span><h2>Executive Summary</h2></div>
+  <p>Reddit reported Q1 2026 results on April 30 that materially exceeded every estimate. Revenue of <strong>$663M</strong> came in 10% above the high end of guidance ($595–605M). Diluted EPS of <strong>$1.01</strong> crushed consensus of $0.57 by 77%. Q2 guidance calls for $715–725M (~49% YoY) with ~40% adjusted EBITDA margins. ARPU grew 44% to $5.23. FCF margin reached 47%. CEO Huffman set an explicit goal of <strong>100M daily U.S. users</strong>.</p>
+
+  <div class="callout warn">
+    <strong>The tension:</strong> Reddit the business is exceptional — 91% gross margins, 69% revenue growth, AI data licensing tailwind. Reddit the stock at $165 offers only modest asymmetry. Raw risk/reward is 1.3:1 (below Druckenmiller's 3:1 minimum). The rating is ACCUMULATE ON WEAKNESS — a pullback to $140–150 would make this a clean BUY.
+  </div>
+</div>
+
+<!-- ═══════════════ SCENARIO ANALYSIS ═══════════════ -->
+<div class="card">
+  <div class="card-header"><span class="icon"></span><h2>Scenario Analysis — 12-Month Forward (FY2027E Basis)</h2></div>
+
+  <div class="scenario-grid">
+    <div class="scenario-card bull">
+      <div class="sc-label">Bull Case</div>
+      <div class="sc-price">$250</div>
+      <div class="sc-return" style="color:#16a34a;">+51%</div>
+      <div class="sc-prob">Probability: 25%</div>
+      <div class="sc-basis">$4.2B rev · 28% margin<br>$6.05 EPS · 41x P/E<br>Growth re-accelerates, premium multiple holds</div>
+    </div>
+    <div class="scenario-card base">
+      <div class="sc-label">Base Case</div>
+      <div class="sc-price">$200</div>
+      <div class="sc-return" style="color:#475569;">+21%</div>
+      <div class="sc-prob">Probability: 55%</div>
+      <div class="sc-basis">$3.8B rev · 26% margin<br>$4.99 EPS · 40x P/E<br>Growth normalises ~30%, multiple steady</div>
+    </div>
+    <div class="scenario-card bear">
+      <div class="sc-label">Bear Case</div>
+      <div class="sc-price">$100</div>
+      <div class="sc-return" style="color:#dc2626;">−40%</div>
+      <div class="sc-prob">Probability: 20%</div>
+      <div class="sc-basis">$3.3B rev · 22% margin<br>$3.59 EPS · 28x P/E<br>Deceleration penalty, multiple derates</div>
+    </div>
+  </div>
+
+  <!-- Risk/Reward visual -->
+  <div class="rr-visual">
+    <span class="rr-label" style="color:#dc2626;">Bear −40%</span>
+    <div class="rr-bar-track">
+      <div class="rr-downside" style="width: 22%;">$100</div>
+      <div class="rr-center"></div>
+      <div class="rr-upside" style="width: 28%;">$250</div>
+    </div>
+    <span class="rr-label" style="color:#16a34a;">Bull +51%</span>
+  </div>
+  <p style="text-align:center; font-size:0.82rem; color:#64748b; margin-top:0.25rem;">
+    EV = $192.50 · Expected return +16.3% · Raw risk/reward 1.3:1 · Probability-weighted 3.0:1
+  </p>
+</div>
+
+<!-- ═══════════════ BULL & BEAR ═══════════════ -->
+<div class="card" style="border-left: 4px solid #22c55e;">
+  <div class="card-header"><span class="icon"></span><h2>The Bull Case</h2></div>
+  <ol style="padding-left:1.25rem;">
+    <li style="margin-bottom:0.75rem;"><strong>Ad platform in mid-inflection, not late-cycle.</strong> Q1 revenue $663M grew ~69% YoY — 7th consecutive quarter of 60%+ growth. Performance ads doubled. Reddit Max delivering 17% CPA reduction, 25% more conversions. SMB revenue doubled YoY. Active advertisers +75%. 17 of top 15 verticals grew 50%+. Consistent beat pattern — every quarter since IPO, often by >10%.</li>
+    <li style="margin-bottom:0.75rem;"><strong>Operating leverage arriving faster than consensus — Q2 guide confirms it.</strong> Op margin from ~13% (Q1 2025) → 27.6% (Q1 2026). FCF margin 47% ($312M). Cash & investments $2.8B. Q2 adj. EBITDA guide $285–295M implies ~40% margin at midpoint — continued leverage even while investing in ML and Max. SBC declining to 10.3% of revenue.</li>
+    <li style="margin-bottom:0.75rem;"><strong>AI tailwind is real, under-monetized, multi-vector.</strong> "Other revenue" (data licensing) $39M in Q1. Reddit is "the most cited source in AI citations." Corpus positioned as "oil for the modern Internet." Greenfield pressed on deal size ($50–60M/year); Huffman declined to comment on exclusivity — signalling active negotiations. Search WAUqs +30% YoY. Max delivers 17% CPA ↓ + 25% more conversions. ~50% of Max advertisers use AI creative.</li>
+    <li style="margin-bottom:0.75rem;"><strong>Commercial intent is structural — ARPU runway massive.</strong> "Around 40% of conversations on Reddit are commercial in nature." ARPU $5.23 (+44% YoY) — still a fraction of Meta ($45+), Pinterest ($15+), Snap ($10+). Performance ads >60% of total. Shopify integration opens product-level ad formats. DPA has "thousands of advertisers yet to adopt" — penetration low even among existing customers.</li>
+    <li style="margin-bottom:0.75rem;"><strong>Balance sheet is a fortress — patient capital return.</strong> $1B buyback with $995M remaining (only 35K shares in Q1 — patient, not aggressive). $2.8B cash & investments, zero net debt. Q1 FCF $312M. SBC at 10.3%. Q2 SBC seasonally higher but growing at "half the rate of revenue" YoY.</li>
+    <li style="margin-bottom:0.75rem;"><strong>The short thesis got falsified.</strong> 12.1% of float short. Bear case rested on sharp deceleration + elevated SBC. Q1 delivered 69% growth vs ~53% guided. SBC fell to 10.3%. Ad load "still quite low compared to peers" (Wong). 12% pop on May 1 suggests short covering — at 41% below 52-week high, multi-quarter re-rating room exists.</li>
+    <li style="margin-bottom:0.75rem;"><strong>The U.S. user goal frames the TAM.</strong> Huffman set explicit goal: 100M daily U.S. users. No timeline given ("I don't know the timeline") — honest. If U.S. alone reaches 100M (implying ~250M+ global DAU), revenue runway at $5.23 ARPU is enormous. Product agenda: feed ML, onboarding, app performance, passkeys, bot verification.</li>
+  </ol>
+</div>
+
+<div class="card" style="border-left: 4px solid #ef4444;">
+  <div class="card-header"><span class="icon"></span><h2>The Bear Case (Munger Inversion)</h2></div>
+  <ol style="padding-left:1.25rem;">
+    <li style="margin-bottom:0.75rem;"><strong>Q2 guidance confirms deceleration.</strong> $715–725M = ~49% YoY, down from Q1's 69%. Management cites tough comp — but the slope 69% → 49% → 35% → 25% is the bear trajectory. Market prices the slope, not the level.</li>
+    <li style="margin-bottom:0.75rem;"><strong>Three-force Lollapalooza.</strong> AI search disintermediation + ad market cyclicality ("month-to-month" planning noted) + content moderation costs (EU DSA). Reddit controls none of these.</li>
+    <li style="margin-bottom:0.75rem;"><strong>Monopoly in text, competitor in ads.</strong> 121M DAU vs Meta's 3.3B. Advertisers allocate by ROAS. If Reddit Max doesn't close the gap, budget migration stalls.</li>
+    <li style="margin-bottom:0.75rem;"><strong>Persistent insider selling.</strong> 61 Form 4s in 180 days. No open-market purchases. Aggregate selling absorbs buyback benefit.</li>
+    <li style="margin-bottom:0.75rem;"><strong>Valuation already prices in good news.</strong> 47x trailing P/E. At 30% growth in FY2027, today's ~20x forward looks fair — not cheap. Safety margin comes from execution, not price.</li>
+  </ol>
+</div>
+
+<!-- ═══════════════ FRAMEWORK CONTRIBUTION ═══════════════ -->
+<div class="card">
+  <div class="card-header"><span class="icon"></span><h2>Conviction Framework — How 7/10 Is Built</h2></div>
+
+  <div class="fw-bar-row">
+    <span class="fw-label">Buffett (quality)</span>
+    <div class="fw-track"><div class="fw-fill pos" style="width:90%;">↑ Strong</div></div>
+    <span class="fw-weight">30%</span>
+  </div>
+  <div class="fw-bar-row">
+    <span class="fw-label">Munger (inversion)</span>
+    <div class="fw-track"><div class="fw-fill neg" style="width:50%;">↓ Negative</div></div>
+    <span class="fw-weight">25%</span>
+  </div>
+  <div class="fw-bar-row">
+    <span class="fw-label">Thiel (monopoly)</span>
+    <div class="fw-track"><div class="fw-fill pos" style="width:55%;">→ Mild ↑</div></div>
+    <span class="fw-weight">20%</span>
+  </div>
+  <div class="fw-bar-row">
+    <span class="fw-label">Druckenmiller (asymmetry)</span>
+    <div class="fw-track"><div class="fw-fill neut" style="width:40%;">→ Neutral</div></div>
+    <span class="fw-weight">15%</span>
+  </div>
+  <div class="fw-bar-row">
+    <span class="fw-label">Lütke (founder)</span>
+    <div class="fw-track"><div class="fw-fill pos" style="width:60%;">↑ Mild</div></div>
+    <span class="fw-weight">5%</span>
+  </div>
+  <div class="fw-bar-row">
+    <span class="fw-label">Marks (cycles)</span>
+    <div class="fw-track"><div class="fw-fill pos" style="width:55%;">→ Mild ↑</div></div>
+    <span class="fw-weight">5%</span>
+  </div>
+
+  <div style="display:flex; align-items:center; justify-content:center; gap:1rem; margin-top:1.25rem; padding-top:1rem; border-top:1px solid #e2e8f0;">
+    <div style="background:#f8fafc; border-radius:12px; padding:0.75rem 1.5rem; text-align:center;">
+      <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.6px; color:#94a3b8;">Net Conviction</div>
+      <div style="font-size:2rem; font-weight:800; color:#d97706;">7<span style="font-size:1rem; color:#94a3b8;">/10</span></div>
+    </div>
+    <div style="font-size:0.82rem; color:#64748b; max-width:300px;">
+      Business quality is exceptional; entry price at $165 and uncontrollable risks (AI disintermediation, ad cyclicality) cap conviction. A pullback to $140–150 would lift this to 8/10.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ REVENUE TRAJECTORY TABLE ═══════════════ -->
+<div class="card">
+  <div class="card-header"><span class="icon"></span><h2>Revenue Trajectory & Unit Economics</h2></div>
+  <table>
+    <thead><tr><th></th><th>FY2024</th><th>FY2025</th><th>Q1 2026</th><th>Q2 2026E</th><th>Trend</th></tr></thead>
+    <tbody>
+      <tr><td>Total Revenue</td><td class="num">$1.30B</td><td class="num">$2.20B</td><td class="num">$663M</td><td class="num">$715–725M</td><td><span class="tag tag-green">↑ +69% Q1</span></td></tr>
+      <tr><td>Ad Revenue</td><td class="num">~$1.22B</td><td class="num">~$2.06B</td><td class="num">$625M</td><td class="num">—</td><td>94% of total</td></tr>
+      <tr><td>Other (data licensing)</td><td class="num">~$80M</td><td class="num">~$144M</td><td class="num">$39M</td><td class="num">—</td><td>6% of total</td></tr>
+      <tr class="row-up"><td>Gross Margin</td><td class="num">90.5%</td><td class="num">91.2%</td><td class="num">91.5%</td><td class="num">—</td><td><span class="tag tag-green">Best in class</span></td></tr>
+      <tr class="row-up"><td>Operating Margin</td><td class="num">~11%</td><td class="num">20.1%</td><td class="num">27.6%</td><td class="num">~40% EBITDA</td><td><span class="tag tag-green">Inflecting</span></td></tr>
+      <tr class="row-up"><td>FCF Margin</td><td class="num">~17%</td><td class="num">31%</td><td class="num">47%</td><td class="num">—</td><td><span class="tag tag-green">$312M in Q1</span></td></tr>
+      <tr class="row-up"><td>SBC % of Revenue</td><td class="num">~22%</td><td class="num">15.6%</td><td class="num">10.3%</td><td class="num">~12% (seasonal)</td><td><span class="tag tag-green">↓ Improving</span></td></tr>
+      <tr class="row-up"><td>ARPU</td><td class="num">~$2.40</td><td class="num">~$3.63</td><td class="num">$5.23</td><td class="num">—</td><td><span class="tag tag-green">+44% YoY</span></td></tr>
+      <tr><td>CapEx % of Revenue</td><td class="num">&lt;1%</td><td class="num">&lt;1%</td><td class="num">&lt;1% ($1M)</td><td class="num">—</td><td>Asset-light</td></tr>
+      <tr class="row-up"><td>Cash &amp; Investments</td><td class="num">~$1.8B</td><td class="num">~$2.0B</td><td class="num">$2.8B</td><td class="num">—</td><td><span class="tag tag-green">Fortress</span></td></tr>
+    </tbody>
+  </table>
+  <div class="callout info" style="margin-top:1rem;">
+    <strong>LTV/CAC:</strong> User acquisition is primarily organic. Marketing spend is mid-single-digit % of revenue. With 91% gross margins, LTV/CAC is effectively infinite — the constraint is the slope of organic growth, not payback.
+  </div>
+</div>
+
+<!-- ═══════════════ INNOVATION TIMELINE ═══════════════ -->
+<div class="card">
+  <div class="card-header"><span class="icon"></span><h2>Innovation Track Record</h2></div>
+  <table>
+    <thead><tr><th>Period</th><th>Innovation</th><th>Category</th><th>Impact</th></tr></thead>
+    <tbody>
+      <tr class="row-up"><td>2024</td><td>Data licensing (Google, OpenAI)</td><td><span class="tag tag-blue">AI Data</span></td><td>~$200M+ annual revenue stream outside advertising</td></tr>
+      <tr class="row-up"><td>2024</td><td>CAPI (Conversions API)</td><td><span class="tag tag-blue">Ad Tech</span></td><td>Lower-funnel performance; conversion revenue tripled 4 straight quarters</td></tr>
+      <tr class="row-up"><td>Q4 2025</td><td>Reddit Answers (AI search)</td><td><span class="tag tag-blue">AI Product</span></td><td>1M → 15M weekly queries in one year</td></tr>
+      <tr class="row-up"><td>Q4 2025</td><td>Verified Profiles</td><td><span class="tag tag-blue">Platform</span></td><td>Users posted 10%+ more in first week</td></tr>
+      <tr class="row-up"><td>Q4 2025</td><td>Dynamic Product Ads (DPA)</td><td><span class="tag tag-blue">Ad Tech</span></td><td>ML delivered 75%+ ROAS improvement</td></tr>
+      <tr class="row-up"><td>Q1 2026</td><td>Reddit Max (public beta)</td><td><span class="tag tag-blue">AI Ad Tech</span></td><td>17% CPA reduction, 25% more conversions</td></tr>
+      <tr class="row-up"><td>Q1 2026</td><td>Shopify integration</td><td><span class="tag tag-blue">Commerce</span></td><td>Product-level ad formats; commerce intent capture</td></tr>
+      <tr><td>Q1 2026</td><td>$1B buyback authorization</td><td><span class="tag tag-gray">Capital</span></td><td>First capital return; $995M remaining</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:0.85rem; color:#64748b; margin-top:0.5rem;">Reddit has shipped more monetization products in the last 8 quarters than in the prior 8 years. Product velocity under COO Jen Wong is the most underappreciated part of the thesis.</p>
+</div>
+
+<!-- ═══════════════ MANAGEMENT GRADES ═══════════════ -->
+<div class="card">
+  <div class="card-header"><span class="icon"></span><h2>Management Analysis — Overall Grade: A−</h2></div>
+  <table>
+    <thead><tr><th>Executive</th><th>Role</th><th>Background</th><th>Key Signal (Q1 Call)</th><th>Grade</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Steve Huffman</strong> (u/spez)</td><td>CEO, Co-Founder</td><td>UVA CS · Returned 2015 · Led through IPO & AI era</td><td>"100M U.S. DAU" · "conversations are like oil" · "product quality → growth"</td><td><span class="tag tag-green">A−</span></td></tr>
+      <tr><td><strong>Jen Wong</strong> (u/adsjunkie)</td><td>COO</td><td>Ex-Time Inc. Digital · Built ad business 0→$2.2B</td><td>"17% CPA reduction, 25% more conversions" · Shopify · "ad load still low"</td><td><span class="tag tag-green">A</span></td></tr>
+      <tr><td><strong>Andrew Vollero</strong> (u/TimingandLuck)</td><td>CFO</td><td>Ex-Snap, Mattel · Public-company discipline</td><td>"47% FCF margin a powerful proof point" · "$2.8B cash" · SBC "half rate of revenue"</td><td><span class="tag tag-green">A</span></td></tr>
+    </tbody>
+  </table>
+  <table style="margin-top:1rem;">
+    <thead><tr><th>Dimension</th><th>Assessment</th><th>Grade</th></tr></thead>
+    <tbody>
+      <tr class="row-up"><td>Capital Allocation</td><td>$1B buyback · patient execution (35K shares in Q1) · M&A ad tech tuck-ins only · $2.8B cash, zero debt</td><td><span class="tag tag-green">A</span></td></tr>
+      <tr class="row-warn"><td>Insider Activity</td><td>61 Form 4s in 180 days · almost all 10b5-1 plan · COO Wong sold 39K shares in April · No open-market purchases</td><td><span class="tag tag-amber">Neutral</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════ EARNINGS CALL ANALYSIS ═══════════════ -->
+<div class="card">
+  <div class="card-header"><span class="icon"></span><h2>Q1 2026 Earnings Call — Transcript Analysis</h2></div>
+
+  <h3>Management Tone Shift (Q4 → Q1)</h3>
+  <table>
+    <thead><tr><th>Speaker</th><th>Q4 2025 Language</th><th>Q1 2026 Language</th><th>Shift</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Huffman</strong> (CEO)</td><td>"Breakout year," Rule of 115, $1B buyback</td><td>"100M U.S. DAU," "conversations are like oil," "product quality → growth"</td><td><span class="tag tag-green">Capital return → Product ambition</span></td></tr>
+      <tr><td><strong>Wong</strong> (COO)</td><td>Full-funnel, automation-first 2026</td><td>"17% CPA ↓, 25% more conversions," Shopify, "ad load still low"</td><td><span class="tag tag-green">Strategy → Metrics-driven</span></td></tr>
+      <tr><td><strong>Vollero</strong> (CFO)</td><td>"You gotta make March happen"</td><td>"47% FCF margin proof point," "$2.8B cash," SBC "half rate of revenue"</td><td><span class="tag tag-green">Cautious → Confident</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Q&A Pressure Map</h3>
+  <table>
+    <thead><tr><th>Analyst</th><th>Firm</th><th>Topic</th><th>Response Quality</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr class="row-warn"><td>Richard Greenfield</td><td>LightShed</td><td>AI deal economics, 100M DAU timeline</td><td>Deflected — "No comment," "I don't know"</td><td><strong>⚠ Pressure:</strong> AI deal value skepticism</td></tr>
+      <tr><td>Douglas Anmuth</td><td>JPMorgan</td><td>User frequency, DPA adoption</td><td>Data-rich — search WAUqs +30%, "thousands" yet to adopt</td><td><span class="tag tag-green">Reassuring</span></td></tr>
+      <tr><td>Mark Shmulik</td><td>Bernstein</td><td>Talent → KPIs, ad load risk</td><td>Candid — "in the middle of it," ad load "still quite low"</td><td><span class="tag tag-green">Reassuring</span></td></tr>
+      <tr><td>Thomas Champion</td><td>Piper Sandler</td><td>Logged-in/out monetization, macro</td><td>Direct — "shorter cycles month-to-month"</td><td><span class="tag tag-amber">Mild macro concern</span></td></tr>
+      <tr><td>Justin Post</td><td>BofA</td><td>GenAI use, Google algorithm shifts</td><td>Defensive — "nothing further to comment"</td><td><span class="tag tag-gray">Monitoring</span></td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:0.82rem; color:#64748b; margin-top:0.5rem;"><strong>Pressure cluster:</strong> AI data licensing economics drew the sharpest questioning. Huffman's refusal to comment on exclusivity or deal size signals active negotiations — the highest-upside, highest-uncertainty vector in the thesis.</p>
+
+  <h3>Guidance Progression</h3>
+  <table>
+    <thead><tr><th>Metric</th><th>Q1 Guide (Q4 call)</th><th>Q1 Actual</th><th>Q2 Guide</th><th>Direction</th></tr></thead>
+    <tbody>
+      <tr class="row-up"><td>Revenue</td><td class="num">$595–605M</td><td class="num">$663M (+10%)</td><td class="num">$715–725M</td><td>Seq +8%, YoY ~49%</td></tr>
+      <tr class="row-up"><td>Adj. EBITDA</td><td class="num">$110–220M (~36%)</td><td class="num">~$265M (~40%)</td><td class="num">$285–295M (~40%)</td><td>Stable margin</td></tr>
+      <tr class="row-up"><td>SBC Trend</td><td class="num">"High teens" (FY)</td><td class="num">10.3% (Q1)</td><td class="num">"Half rate of rev" YoY</td><td>Improving</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════ MONOPOLY & AI ═══════════════ -->
+<div class="card">
+  <div class="card-header"><span class="icon"></span><h2>Monopoly Assessment (Thiel) &amp; AI Impact</h2></div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+    <div>
+      <h3>Competitive Position</h3>
+      <table>
+        <thead><tr><th>Test</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr class="row-up"><td>Gross Margin</td><td><strong>91.5%</strong> — monopoly territory (Meta 81%, Snap 54%)</td></tr>
+          <tr class="row-up"><td>Pricing Power</td><td>Improving — CAPI/DPA demonstrate ROAS; Max CPA ↓17% reinvested in share growth</td></tr>
+          <tr class="row-up"><td>Market Position</td><td>Monopoly in human-generated text at scale — 24B posts, 19yr history, non-replicable</td></tr>
+          <tr class="row-up"><td>Zero-to-One</td><td>Subreddit model — self-governing communities at internet scale; never replicated</td></tr>
+          <tr><td>Monetization</td><td>Competitive — fights for ad budgets vs Meta, Google, TikTok, Amazon</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.85rem; margin-top:0.5rem;"><strong>Verdict:</strong> Monopoly in community-generated text; competitive in advertising. The gap between those two positions is the entire thesis.</p>
+    </div>
+    <div>
+      <h3>AI Impact — Category 3 (Benefits)</h3>
+      <table>
+        <thead><tr><th>Vector</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr class="row-up"><td>Data Licensing</td><td>$39M Q1 · Google/OpenAI renewals approaching · Huffman: "oil for the modern Internet"</td></tr>
+          <tr class="row-up"><td>Search Distribution</td><td>Reddit Answers 15M weekly queries · "Most cited source in AI citations" · Search WAUqs +30%</td></tr>
+          <tr class="row-up"><td>Ad Tech AI</td><td>Max 17% CPA ↓ · DPA 75%+ ROAS ↑ · ~50% Max advertisers use AI creative</td></tr>
+          <tr class="row-warn"><td>Risk: Disintermediation</td><td>AI search could reduce click-through · Mitigated by discussion value + Reddit Answers + partnership leverage</td></tr>
+        </tbody>
+      </table>
+      <div class="callout info" style="margin-top:0.75rem;"><strong>Timing advantage:</strong> Reddit's AI monetization is happening <em>now</em>, not waiting for a 2027 enterprise adoption inflection.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ STOP-LOSS & TRIGGERS ═══════════════ -->
+<div class="card">
+  <div class="card-header"><span class="icon"></span><h2>Thesis Stop-Loss Triggers &amp; Key Monitors</h2></div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+    <div>
+      <h3>Binary Stop-Loss Triggers</h3>
+      <table>
+        <thead><tr><th>Condition</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Revenue growth &lt;35% YoY, 2 consecutive quarters</td><td><span class="tag tag-green">OK: 69% Q1, ~49% Q2 guide</span></td></tr>
+          <tr><td>Gross margin &lt;85%</td><td><span class="tag tag-green">OK: 91.5%</span></td></tr>
+          <tr><td>DAU growth negative, trailing 3-month</td><td><span class="tag tag-green">OK: +19% in Q4 (latest)</span></td></tr>
+          <tr><td>CEO Huffman departs without founder-successor</td><td><span class="tag tag-green">OK</span></td></tr>
+          <tr><td>Google/OpenAI materially reduce Reddit citations</td><td><span class="tag tag-green">OK — no evidence</span></td></tr>
+        </tbody>
+      </table>
+      <div class="callout info" style="margin-top:0.75rem;"><strong>Proximity check:</strong> No triggers within warning range. Nearest is Q2 guide at ~49% vs 35% trigger — 14pp buffer.</div>
+    </div>
+    <div>
+      <h3>Key Triggers to Monitor</h3>
+      <ol style="font-size:0.88rem; padding-left:1.25rem;">
+        <li style="margin-bottom:0.4rem;">Q2 2026 actuals vs $715–725M — deceleration to ~49% is priced in; will they beat again?</li>
+        <li style="margin-bottom:0.4rem;">Google/OpenAI licensing renewals (H2 2026) — Greenfield's "$50–60M/year a pimple" signals street expects upside</li>
+        <li style="margin-bottom:0.4rem;">Reddit Max advertiser adoption — "still early," new onboarding "quarters out"</li>
+        <li style="margin-bottom:0.4rem;">DAU trajectory — logged-in/out phaseout Q3 2026; U.S. 100M DAU goal the north star</li>
+        <li style="margin-bottom:0.4rem;">SBC % of revenue — Q2 seasonally higher but YoY at "half the rate of revenue"</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MACRO PARADIGM CONTEXT ═══════════════ -->
+<div class="card">
+  <div class="card-header"><span class="icon"></span><h2>Macro Paradigm Context</h2></div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+    <div>
+      <h3>Paradigm Positioning</h3>
+      <table>
+        <thead><tr><th colspan="2">Framework Analysis</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Paradigm shift</strong></td><td>AI/LLM Supercycle — human-generated text corpus as AI ground truth</td></tr>
+          <tr><td><strong>Wave</strong></td><td>Wave 2 — Application Layer (AI data licensing + AI-powered ad platform)</td></tr>
+          <tr class="row-up"><td><strong>18-month proof points</strong></td><td>Q1 beat (rev +69%, EPS +77%); SBC 10.3%; Max public beta; Shopify; U.S. 100M DAU goal; Google/OpenAI renewals approaching</td></tr>
+          <tr class="row-up"><td><strong>Druckenmiller macro verdict</strong></td><td><strong>Tailwind</strong> — internet advertising + AI data licensing both secular growers</td></tr>
+          <tr><td><strong>Sizing implication</strong></td><td>3–5% — conviction capped by entry price, not business quality</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3>Second &amp; Third-Order Effects</h3>
+      <table>
+        <thead><tr><th>Order</th><th>Effect</th><th>RDDT Implication</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1st</strong></td><td>AI search engines cite Reddit as primary source</td><td>Data licensing revenue + organic traffic (priced)</td></tr>
+          <tr><td><strong>2nd</strong></td><td>AI-generated content flood makes human authenticity scarce</td><td>Reddit becomes "verified human" layer — premium for advertisers & AI trainers (partially priced)</td></tr>
+          <tr><td><strong>3rd</strong></td><td>AI agents replace traditional search → corpus is differentiated answer source for subjective queries</td><td>Reddit participates in AI search economics as opinion/recommendation layer (unpriced)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SEC EDGAR EVENTS & Q1 COMPARISON ═══════════════ -->
+<div class="card">
+  <div class="card-header"><span class="icon"></span><h2>SEC EDGAR — Material Events (90 Days) &amp; Q1 vs Prior Analysis</h2></div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+    <div>
+      <h3>8-K / Material Events</h3>
+      <table>
+        <thead><tr><th>Date</th><th>Event</th><th>Impact</th></tr></thead>
+        <tbody>
+          <tr class="row-up"><td><strong>Apr 30</strong></td><td>Q1 2026 earnings — significant beat; Q2 guide $715–725M</td><td><span class="tag tag-green">Positive</span></td></tr>
+          <tr class="row-up"><td>May 1</td><td>10-Q filed — $663M rev, $204M NI, $2.8B cash</td><td><span class="tag tag-green">Positive</span></td></tr>
+          <tr><td>Feb 5</td><td>Q4 2025 earnings + $1B buyback authorization</td><td><span class="tag tag-green">Positive</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3>Q1 2026 vs Prior Analysis</h3>
+      <table>
+        <thead><tr><th>Dimension</th><th>Prior</th><th>Q1 Update</th></tr></thead>
+        <tbody>
+          <tr class="row-up"><td>Revenue Growth</td><td>~60–65%</td><td><strong>69%</strong></td></tr>
+          <tr class="row-up"><td>Op Margin</td><td>~20%</td><td><strong>27.6%</strong></td></tr>
+          <tr class="row-up"><td>SBC/Revenue</td><td>15.6%</td><td><strong>10.3%</strong></td></tr>
+          <tr class="row-up"><td>FCF Margin</td><td>31%</td><td><strong>47%</strong></td></tr>
+          <tr class="row-up"><td>ARPU</td><td>$3.63</td><td><strong>$5.23</strong></td></tr>
+          <tr class="row-up"><td>Buyback</td><td>None</td><td><strong>$1B authorized</strong></td></tr>
+          <tr><td>Key Risk</td><td>Deceleration</td><td>Q2 confirms ~49% — mechanical (tough comp)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="callout info" style="margin-top:1rem;">
+    <strong>The central question after Q1:</strong> Was this an outlier, or is the growth algorithm more durable than consensus? At $165, the entry price already prices in significant good news — remaining upside depends on execution that is probable but not yet proven.
+  </div>
+</div>
+
+<!-- ═══════════════ CRYPTO / STABLECOIN ═══════════════ -->
+<div class="card">
+  <div class="card-header"><span class="icon"></span><h2>Crypto / Stablecoin Impact</h2></div>
+  <p>Not directly material to Reddit's business model today. Reddit experimented with Community Points (ERC-20 tokens) in 2020–2023 but sunset the program. The company has shown willingness to experiment with crypto but not bet the business on it. No material impact on thesis in either direction.</p>
+
+  <details style="margin-top:0.75rem;">
+    <summary>Rating Consistency Check (Charlie Step 5)</summary>
+    <ul style="font-size:0.88rem; padding-left:1.25rem; margin-top:0.5rem;">
+      <li>Base-case upside from current price: +21% → clears 15% minimum but barely</li>
+      <li>Preferred entry ($140–150) is ~10–15% below current price → ACCUMULATE ON WEAKNESS, not BUY ✓</li>
+      <li>If rated BUY at $165, memo would be internally inconsistent — recommending purchase above preferred entry</li>
+      <li>Framework scoring: no standalone numerical scores used — reasoning shown, score dropped per Step 5 ✓</li>
+      <li>Non-consensus claims: each backed by named consensus view (e.g., "social platform base rate" = deceleration to sub-20% within 2–3 years) ✓</li>
+      <li>Steelman bear: Q2 guidance confirms deceleration; if Q3 follows at ~40%, the multiple compression narrative gains momentum regardless of absolute execution</li>
+    </ul>
+  </details>
+</div>
+
+<!-- ═══════════════ LETTER TO MANAGEMENT ═══════════════ -->
+<div class="card" style="background:#f8fafc; border-left:4px solid #475569;">
+  <div class="card-header"><span class="icon"></span><h2>Letter to Management</h2></div>
+  <p><em>To Steve Huffman —</em></p>
+  <p>The most important thing you can do over the next 18 months is not product — it's narrative control.</p>
+  <p>Reddit has now posted seven consecutive quarters of 60%+ revenue growth, crossed $2.2B in annual revenue, delivered 27.6% operating margins, and generated $684M in free cash flow. The stock is down 41% from its high. The market is pricing Reddit like a company whose growth algorithm is breaking, and every quarter you prove that wrong, but the discount persists.</p>
+  <p>You are fighting the ghost of every social media platform that ever scaled and stalled. The market's base rate for social platforms at $2B+ revenue is deceleration to sub-20% within 2–3 years. Your numbers say Reddit is different. But you have not yet articulated <em>why</em> in a way that overwrites the base rate.</p>
+  <p>Reddit is not a social network. It is a text corpus with a community layer. Social networks compete on attention — zero-sum, ad-load-constrained, engagement-optimized. Text corpora compound in value as they grow — every new post makes the corpus more useful for search, more valuable for AI training, and more monetizable via context-targeted advertising. Reddit's growth is limited not by attention share but by the number of human questions that benefit from human answers. That number is not finite.</p>
+  <p><em>— Charlie</em></p>
+</div>
+
+<!-- ═══════════════ SOURCES & DISCLAIMER ═══════════════ -->
+<div class="sources">
+  <strong>Data sources:</strong> SEC EDGAR 10-Q (0001713445-26-000069, May 1, 2026) · SEC EDGAR 10-K (0001713445-26-000022, Feb 6, 2026) · SEC EDGAR 8-K (0001713445-26-000067, Apr 30, 2026) · SEC EDGAR Form 4 (61 filings, 180 days) · yfinance (market data, May 1, 2026) · Alpha Vantage (earnings history, Q4 2025 transcript, sentiment, holdings) · Q1 2026 earnings call insights · Prior memo: Reddit_Investment_Memo.docx.md (Mar 27, 2026, $127)
+</div>
+<div class="footer-note">
+  This memorandum is not investment advice. It is an analytical framework applied to publicly available information.<br>All opinions and estimates are the author's own. Past performance does not guarantee future results. May 1, 2026.
+</div>
+
+</div>
+</body>
+</html>
