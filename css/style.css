@@ -265,7 +265,7 @@ section { padding: 96px 0; }
   margin-bottom: 20px;
 }
 
-.experience-body strong { color: var(--text); font-weight: 600; }
+.experience-body strong { color: inherit; font-weight: 600; }
 
 .experience-body a {
   color: var(--accent);
